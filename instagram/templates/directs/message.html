@@ -1,0 +1,230 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block extra_css%}
+
+  <link rel="stylesheet" href="{% static 'css/message/bootstrap3.3/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/message/chat.css' %}">
+
+  <!-- Font Awesome -->
+<link
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css"
+rel="stylesheet"
+/>
+{% endblock %}
+
+{% block content %}
+  <div id="app" class="app" style="margin-top:50px;position:relative;top:40px;margin-bottom:20px;">
+
+    <!-- LEFT SECTION -->
+
+    <section id="main-left" class="main-left">
+      <!-- header -->
+      <div id="header-left" class="header-left">
+        <span class="glyphicon glyphicon-menu-hamburger hamburger-btn"></span>
+        <span class="glyphicon glyphicon-search search-btn" ></span>
+
+
+        <div class="form-outline" data-mdb-input-init>
+          <input type="text" id="formControlDefault" class="form-control" />
+          <label class="form-label" for="formControlDefault">Form control default</label>
+        </div>
+        
+      </div>
+
+      <!-- chat list -->
+      <div id="chat-list" class="chat-list">
+        <!-- user lists -->
+        {% for message in messages %}
+        <!-- 1) START  LEFT ONE FRIEND-->
+        <div id="friends" class="friends">
+          <!-- photo -->
+          <div class="profile friends-photo">
+            {% if message.user.profile.picture %}
+            <img src="{{ message.user.profile.picture.url}}" alt="">
+            {% else %}
+            <img src="images/ava3.jpg" alt="">
+            {% endif %}
+          </div>
+          <div class="friends-credent">
+            <!-- name -->
+            <span class="friends-name">{{ message.user.username }}</span>
+            <!-- last message -->
+            <span class="friends-message">How are you?</span>
+          </div>
+          <!-- notification badge -->
+          <span class="badge notif-badge">999</span>
+        </div>
+        <!-- 1) END LEFT ONE FRIEND -->
+        {% endfor %}
+
+
+
+
+
+          <!-- 2) START  LEFT ONE FRIEND-->
+       
+        <!-- 2) END LEFT ONE FRIEND -->
+      </div>
+
+      <!-- self-profile -->
+      
+      
+    </section>
+
+
+
+    <!-- RIGHT SECTION -->
+
+    <section id="main-right" class="main-right">
+      <!-- header -->
+      
+      <div id="header-right dropdown-menu-chat" class="header-right">
+        <!-- profile pict -->
+        <div id="header-img" class="profile header-img">
+          {% if profile_receiver.picture %}
+          <img src="{{ profile_receiver.picture.url }}" alt="">
+          {% else %}
+          <img src="images/ava2.jpg" alt="">
+          {% endif %}
+        </div>
+
+        <!-- name -->
+        <h1 class="name friend-name" id="dropdown-menu-chat"><strong>{{ profile_receiver.user.username }}</strong> </h1>
+      
+
+        <!-- some btn -->
+        <div class="some-btn">
+          <strong><span class="glyphicon glyphicon-facetime-video"></span></strong>
+          <span class="glyphicon glyphicon-earphone"></span>
+          <div class="btn-group dropstart">
+            <button type="button" class="btn  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="glyphicon glyphicon-option-vertical option-btn" data-mdb-ripple-init></span>
+            </button>
+            <ul class="dropdown-menu" id='dropdown-menu-header' style="top:-50px">
+                <li><a class="dropdown-item" href="#"><h3>Action</h3></a></li>
+                <strong><li><a class="dropdown-item" href="#"><h3>Another action</h3></a></li></strong>
+                <li><a class="dropdown-item" href="#"><h3>Something else here</h3></a></li>
+            </ul>
+        </div>
+        </div>
+      </div>
+
+      <!-- chat area -->
+      <div id="chat-area" class="chat-area">
+        <!-- chat content -->
+        {% for direct in directs %}
+        {% if direct.sender == request.user %}
+        <!-- START YOUR CHAT TEMPLATE -->
+        <div id="your-chat" class="your-chat" style="margin-top: 30px;">
+          <div class="your-chat group dropdown dropleft" id="your-chat">
+            <p class="your-chat-balloon"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dropdownMenuButton">{{ direct.body }}</p>
+            <div class="dropdown-menu" style="margin-right:80px; left: -40px;" id="dropdown-menu-chat">
+              <a href="{% url 'delete-message' direct.pk %}" class="dropdown-item"><strong>delete</strong></a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+            
+            
+          </div>
+          <p class="chat-datetime"><span class="glyphicon glyphicon-ok"></span> {{direct.date|date:"d M, Y"}} </p>
+        </div>
+        <!--END  your chat -->
+        {% else %}
+        <!-- START FRIENDS CHAT TEMPLATE -->
+        <div id="friends-chat" class="friends-chat">
+          <div class="profile friends-chat-photo">
+            {% if direct.user.profile.picture %}
+            <img src="{{ direct.sender.profile.picture.url }}" alt="">
+            {% else %}
+            <img src="images/ava2.jpg" alt="">
+            {% endif %}
+          </div>
+          <div class="friends-chat-content">
+              <p class="friends-chat-name">{{ direct.sender.profile.user.username }}</p>
+
+              <p class="friends-chat-balloon">{{ direct.body }}</p>
+              <!--start-->
+              <div class="btn-group dropup">
+                    <span class="glyphicon glyphicon-option-vertical option" aria-haspopup="true" aria-expanded="false"
+                    data-mdb-ripple-init aria-expanded="false"  data-toggle="dropdown"></span>
+                 <div class="dropdown-menu" id="dropdown-menu-chat" t>
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </div>
+                </div>
+                  <!--end-->
+                <h5 class="chat-datetime">{{direct.date|date:"d M, Y"}}</h5> 
+            </div>
+        </div>
+      <!--end friend chat template -->
+      {% endif %}
+      {% endfor %}
+      </div>
+
+      <!-- typing area -->
+      <div id="typing-area" class="typing-area">
+
+        <!-- input form -->
+        <form id="message-form" method="POST" action="{% url 'send-directs' %}">
+          {% csrf_token %}
+          <input type="hidden" name="to_user" id="" value="{{active_direct}}" >
+        <input id="type-area" class="type-area" placeholder="Type something..." name="body" >
+    </form>
+
+
+        <!-- attachment btn -->
+        <div class="attach-btn">
+          <strong><span class="glyphicon glyphicon-paperclip file-btn"></span></strong>
+          <!-- <span class="glyphicon glyphicon-camera"></span>
+          <span class="glyphicon glyphicon-picture"></span> -->
+        </div>
+        <span class="glyphicon glyphicon-send send-btn"></span>
+        <!-- send btn -->
+      </div>
+    </section>
+  </div>
+
+
+
+
+
+
+
+
+  
+  {% endblock %}
+  {% block extra_script %}
+
+    <!-- jQuey, Popper, BootstrapJS -->
+    <script src="{% static 'css/message/bootstrap3.3/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'css/message/bootstrap3.3/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/message/message.js' %}"></script>
+    <!-- MDB -->
+<script type="text/javascript"
+src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.umd.min.js"
+></script>
+<script>
+
+    document.querySelector('.send-btn').addEventListener('click', function() {
+        document.getElementById('message-form').submit();
+    });
+
+</script>
+{% endblock %}
+
+
+</body>
+</html>
