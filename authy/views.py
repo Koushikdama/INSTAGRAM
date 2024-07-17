@@ -233,7 +233,7 @@ def Signup(request):
 			
 			return redirect('/user/token')
 		else:
-			return HttpResponse("error")
+			return redirect('signup')
 
             
 	else:
